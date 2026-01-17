@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Absensi Pengurus PPHM</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --green:#1abc9c;        /* hijau cerah */
+    --green-dark:#0e6655;   /* hijau gelap */
+    --gold:#FFD700;          /* emas cerah */
+    --white:#ffffff;         /* putih */
+    --dark:#111111;          /* teks gelap/aksen */
+}
+
+*{box-sizing:border-box;margin:0;padding:0;transition:.3s}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background: radial-gradient(circle at top, #0e6655, #145a32);
+    color:var(--white);
+    min-height:100vh;
+    padding:40px 15px;
+}
+
+/* HEADER */
+header{
+    text-align:center;
+    margin-bottom:40px;
+}
+header h1{
+    letter-spacing:3px;
+    color:var(--gold);
+    text-shadow:0 0 10px var(--green-dark),0 0 25px var(--white);
+}
+header p{color:var(--white);}
+#clock{
+    color:var(--green);
+    margin-top:10px;
+    font-weight:500;
+}
+
+/* GRID */
+.container{
+    max-width:1000px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:25px;
+}
+
+/* CARD */
+.card{
+    padding:35px 20px;
+    border-radius:26px;
+    background: linear-gradient(145deg,rgba(26,188,156,0.2),rgba(255,215,0,0.2));
+    border:1px solid rgba(255,215,0,0.5);
+    text-align:center;
+    cursor:pointer;
+    box-shadow:0 5px 25px rgba(0,0,0,0.2);
+    position:relative;
+}
+.card:hover{
+    transform:translateY(-6px) scale(1.03);
+    box-shadow: 0 0 25px var(--gold), 0 0 35px var(--green);
+}
+.card span{
+    color:var(--white);
+    font-size:14px;
+}
+.card.done::after{
+    content:"✔";
+    position:absolute;
+    top:12px;
+    right:14px;
+    width:28px;
+    height:28px;
+    background:linear-gradient(135deg,var(--gold),var(--green));
+    color:var(--dark);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+/* POPUP */
+.overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.8);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:99;
+}
+.popup{
+    width:360px;
+    padding:35px;
+    border-radius:28px;
+    background: linear-gradient(160deg,var(--green-dark),var(--green));
+    border:1px solid rgba(255,215,0,0.7);
+    text-align:center;
+    box-shadow:0 0 35px var(--gold);
+}
+.popup h2{
+    margin-bottom:25px;
+    color:var(--gold);
+}
+
+/* BUTTON */
+.popup button{
+    width:100%;
+    padding:15px;
+    margin:10px 0;
+    border:none;
+    border-radius:18px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+}
+.hadir{
+    background:linear-gradient(135deg,var(--green-dark),var(--green));
+    color:var(--dark);
+}
+.izin{
+    background:linear-gradient(135deg,var(--white),var(--green));
+    color:var(--dark);
+}
+.alfa{
+    background:linear-gradient(135deg,var(--gold),var(--green));
+    color:var(--dark);
+}
+
+/* TOAST */
+#toast{
+    position:fixed;
+    top:20px;
+    right:-350px;
+    background: linear-gradient(135deg,var(--gold),var(--green));
+    padding:14px 22px;
+    border-radius:16px;
+    box-shadow:0 0 25px rgba(0,0,0,0.2);
+    z-index:200;
+    color:var(--dark);
+    font-weight:500;
+}
+#toast.show{right:20px}
+
+/* LOADING OVERLAY */
+.loading-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.85);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    z-index:300;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.3s ease;
+}
+.loading-overlay.show{
+    opacity:1;
+    pointer-events:auto;
+}
+.loading-spinner{
+    width:100px;
+    height:100px;
+    border:10px solid rgba(255,215,0,0.2);
+    border-top:10px solid var(--green);
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    box-shadow:0 0 20px var(--green), 0 0 40px var(--green-dark), 0 0 60px var(--gold);
+}
+@keyframes spin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+}
+.loading-text{
+    margin-top:20px;
+    color:var(--gold);
+    font-size:20px;
+    font-weight:600;
+    text-shadow:0 0 5px var(--green-dark),0 0 15px var(--white);
+    animation: glow 1.5s infinite alternate;
+}
+@keyframes glow{
+    0%{text-shadow:0 0 5px var(--green-dark),0 0 15px var(--white);}
+    100%{text-shadow:0 0 15px var(--gold),0 0 30px var(--green-dark);}
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>ABSENSI NGA</h1>
+    <h1>MUKHTARUL HADIZ</h1>
+    <p>Pengurusan Pondok Pesantren</p>
+    <p>Hidayatul Mubtadi'in</p>
+    <div id="clock"></div>
+</header>
+
+<div class="container">
+    <div class="card" onclick="openPopup(this,'M. Hasanudin Zuhri')"><h3>M. Hasanudin Zuhri</h3><span>Ketua Pondok</span></div>
+    <div class="card" onclick="openPopup(this,'M. Lahum Afnan')"><h3>M. Lahum Afnan</h3><span>Wali Ketua</span></div>
+    <div class="card" onclick="openPopup(this,'Jamal')"><h3>Jamal</h3><span>Sekertaris I</span></div>
+    <div class="card" onclick="openPopup(this,'Rizal')"><h3>Rizal</h3><span>Sekertaris II</span></div>
+
+    <div class="card" onclick="openPopup(this,'Anam')"><h3>Anam</h3><span>Bendahara</span></div>
+    <div class="card" onclick="openPopup(this,'Harun')"><h3>Harun</h3><span>Keamanan I</span></div>
+    <div class="card" onclick="openPopup(this,'Nando')"><h3>Nando</h3><span>Keamanan II</span></div>
+    <div class="card" onclick="openPopup(this,'Taufik')"><h3>Taufik</h3><span>Seksi Pendidikan & TPQ</span></div>
+    <div class="card" onclick="openPopup(this,'Ichrom')"><h3>Ichrom</h3><span>Seksi Pendidikan & TPQ</span></div>
+    <div class="card" onclick="openPopup(this,'Maftuh')"><h3>Maftuh</h3><span>Kelistrikan & Perairan</span></div>
+    <div class="card" onclick="openPopup(this,'Imam')"><h3>Imam</h3><span>Kebersihan I</span></div>
+    <div class="card" onclick="openPopup(this,'Sapril')"><h3>Sapril</h3><span>Kebersihan II</span></div>
+    <div class="card" onclick="openPopup(this,'Mujib')"><h3>Mujib</h3><span>Seksi Dokumentasi</span></div>
+    <div class="card" onclick="openPopup(this,'Ridwan')"><h3>Ridwan</h3><span>Seksi Kesehatan I</span></div>
+    <div class="card" onclick="openPopup(this,'Habibi')"><h3>Habibi</h3><span>Seksi Kesehatan II</span></div>
+    <div class="card" onclick="openPopup(this,'Aan')"><h3>Aan</h3><span>Sarana & Prasarana I</span></div>
+    <div class="card" onclick="openPopup(this,'Haidir')"><h3>Haidir</h3><span>Seksi Kegiatan</span></div>
+</div>
+
+<div class="overlay" id="popup">
+    <div class="popup">
+        <h2 id="nama"></h2>
+        <button class="hadir" onclick="kirim('Hadir')">Hadir</button>
+        <button class="izin" onclick="kirim('Izin')">Izin</button>
+        <button class="alfa" onclick="kirim('Alfa')">Alfa</button>
+    </div>
+</div>
+
+<div id="toast"></div>
+
+<audio id="audio" preload="auto" src="https://nandozainal467-creator.github.io/grante/ting.mp3"></audio>
+
+<!-- Loading -->
+<div class="loading-overlay" id="loading">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Sedang menyimpan absensi...</p>
+</div>
+
+<script>
+let selectedName="", selectedCard=null;
+const audio=document.getElementById("audio");
+const toastBox=document.getElementById("toast");
+const popup=document.getElementById("popup");
+const nama=document.getElementById("nama");
+
+/* JAM */
+setInterval(()=>{
+    document.getElementById("clock").innerText=
+    new Date().toLocaleString("id-ID",{dateStyle:"full",timeStyle:"short"});
+},1000);
+
+/* TOAST */
+function toast(msg){
+    toastBox.innerText=msg;
+    toastBox.classList.add("show");
+    setTimeout(()=>toastBox.classList.remove("show"),2500);
+}
+
+/* POPUP */
+function openPopup(card,name){
+    selectedName=name;
+    selectedCard=card;
+    nama.innerText=name;
+    popup.style.display="flex";
+    toast("📋 Pilih status kehadiran");
+}
+
+/* KIRIM + LOADING + AUDIO AFTER */
+function kirim(status){
+    const loading = document.getElementById("loading");
+    loading.classList.add("show");
+
+    fetch("https://script.google.com/macros/s/AKfycbyLZMAUwZpn3IeKUvMoBdrrSKCy6JuTb8ERv7Miez4DKCUquz61tkbApiuW3BH5lM8LHg/exec",{
+        method:"POST",
+        body:JSON.stringify({
+            nama:selectedName,
+            status:status,
+            waktu:new Date().toLocaleString("id-ID")
+        })
+    })
+    .then(()=>{
+        loading.classList.remove("show");
+        selectedCard.classList.add("done");
+        popup.style.display="none";
+        toast(`✅ ${selectedName} : ${status}`);
+
+        // Mainkan audio setelah loading selesai
+        audio.currentTime = 0;
+        audio.play().catch(()=>{});
+    })
+    .catch(()=>{
+        loading.classList.remove("show");
+        toast("❌ Gagal menyimpan. Coba lagi.");
+    });
+}
+</script>
+
+</body>
+</html>
